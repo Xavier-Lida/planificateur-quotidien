@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificateur Quotidien</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="main-box">
+            <h2>Planificateur Quotidien</h2>
+            <div class="infos">
+                <div class="time">
+                    <input type="time" id="input-hour" placeholder="Heure" min="0" max="23">
+                    <input type="number" id="input-time" placeholder="Durée" min="0.5" max="24" step="0.5">
+                </div>
+                <div class="row">
+                    <input type="text" id="input-box" placeholder="Ajouter ma tâche">
+                    <button onclick="addTask()">Ajouter</button>
+                </div>
+            </div>
+            <h2>Plan du jour</h2>
+            <div class="agenda">
+                <ul id="list-container">
+                    <li>
+                        <!-- <span class="heure">8h</span>
+                        <span class="tache">Réunion d'équipe</span> -->
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+<script src="script.js"></script>
+</body>
+</html>
