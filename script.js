@@ -3,6 +3,8 @@ const inputTime = document.getElementById("input-time");
 const inputBox = document.getElementById("input-box");
 const listContainer = document.getElementById("list-container");
 
+let taches;
+
 function validHour(){
     let valid = true;
     return valid;
@@ -35,6 +37,7 @@ function addTask(){
         let spanHour = document.createElement("span");
         let spanTask = document.createElement("span");
         let spanX = document.createElement("span");
+        spanHour.className = "heure";
         spanX.className = "remove";
         spanHour.innerHTML = inputHour.value;
         spanTask.innerHTML = inputBox.value;
@@ -46,7 +49,33 @@ function addTask(){
         inputTime.value = '';
         inputBox.value = '';
     }
+    trierTachesParHeure();
     saveData();
+}
+
+function trierTachesParHeure() {
+    taches = Array.from(listContainer.querySelectorAll("li"));
+    // Boucle pour trier les activités en ordre chronologique dans la journée
+    for(let i = 0; i < taches.length; i++){
+        let min = i;
+        console.log(taskHour(i));
+        for(let j = i+1; j < taches.length; j++){
+            if(taskHour(j) < taskHour(min)){
+                min = j;
+            }
+        }
+        let temp = taches[i];
+        taches[i] = taches[min];
+        taches[min] = temp;
+    }
+    listContainer.innerHTML = "";
+    taches.forEach(tache => listContainer.appendChild(tache));
+}
+
+
+// Fonction qui retourne l'heure d'une tâche depuis minuit en minutes
+function taskHour(taskIndex){
+    return taches[taskIndex].querySelector(".heure").innerHTML.split(":").map(Number)[0] * 60 + taches[taskIndex].querySelector(".heure").innerHTML.split(":").map(Number)[1]
 }
 
 // Écoute si l'utilisateur click sur la liste de tâches
@@ -57,6 +86,13 @@ listContainer.addEventListener("click", function(e){
     saveData()
 });
 
+// Écoute si l'utilisateur appuie sur une touche pendant qu'il est dans la Input box
+inputBox.addEventListener("keydown", function(press){
+    if(press.key === "Enter"){
+        addTask();
+    }
+});
+
 function saveData(){
     localStorage.setItem("data", listContainer.innerHTML);
 }
@@ -65,12 +101,6 @@ function showTask(){
     listContainer.innerHTML = localStorage.getItem("data");
 }
 
-// Écoute si l'utilisateur appuie sur une touche pendant qu'il est dans la Input box
-inputBox.addEventListener("keydown", function(press){
-    if(press.key === "Enter"){
-        addTask();
-    }
-});
 
 showTask();
 
