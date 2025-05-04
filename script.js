@@ -3,10 +3,32 @@ const inputTime = document.getElementById("input-time");
 const inputBox = document.getElementById("input-box");
 const listContainer = document.getElementById("list-container");
 
-let taches;
+let taches = [];
 
 function validHour(){
     let valid = true;
+    let [h, m] = inputHour.value.split(":").map(Number);
+    let heureDebutNouvTache = h * 60 + m;
+    let heureFinNouvTache = heureDebutNouvTache + Number(inputTime.value) * 60;
+    if(taches.length > 0){
+        for(let i = 0; i < taches.length; i++){
+            let heureDebut = taskHour(i);
+            let heureFin = taskHour(i) + taskTime(i);
+            if(heureDebutNouvTache <= heureDebut && heureFinNouvTache > heureDebut){
+                valid = false;
+                alert(`Tu ne pourras pas terminer ta tâche! As-tu oublier ${taches[i].querySelector(".name").innerHTML}?`)
+                break;
+            } else if (heureDebutNouvTache >= heureDebut && heureFinNouvTache <= heureFin){
+                valid = false;
+                alert(`Oops! Tu as déjà prévu ${taches[i].querySelector(".name").innerHTML}.`)
+                break;
+            } else if (heureDebutNouvTache < heureFin && heureFinNouvTache >= heureFin){
+                valid = false;
+                alert(`Aïe! Tu n'as pas fini ${taches[i].querySelector(".name").innerHTML} à cette heure là.`)
+                break;
+            }
+            }
+    }
     return valid;
 }
 
@@ -30,21 +52,31 @@ function validTask(){
 
 function addTask(){
     if(validHour() && validTime() && validTask()){
-        // Ajouter le texte d'une tâche
+        // Ajouter une tâche
         let li = document.createElement("li");
         listContainer.appendChild(li);
-        // Ajouter le X d'une tâche
+        // Ajouter le composantes d'une tâche
+        // Heure
         let spanHour = document.createElement("span");
-        let spanTask = document.createElement("span");
-        let spanX = document.createElement("span");
         spanHour.className = "heure";
-        spanX.className = "remove";
         spanHour.innerHTML = inputHour.value;
-        spanTask.innerHTML = inputBox.value;
-        spanX.innerHTML = "\u00d7";
         li.appendChild(spanHour);
+        // Temps (invisible à l'utilisateur)
+        let spanTime = document.createElement("span");
+        spanTime.className = "duration"
+        spanTime.innerHTML = inputTime.value;
+        li.appendChild(spanTime);
+        // Nom
+        let spanTask = document.createElement("span");
+        spanTask.className = "name"
+        spanTask.innerHTML = inputBox.value;
         li.appendChild(spanTask);
+        // Bouton X
+        let spanX = document.createElement("span");
+        spanX.className = "remove";
+        spanX.innerHTML = "\u00d7";
         li.appendChild(spanX);
+        // Reset l'input
         inputHour.value = '';
         inputTime.value = '';
         inputBox.value = '';
@@ -58,7 +90,6 @@ function trierTachesParHeure() {
     // Boucle pour trier les activités en ordre chronologique dans la journée
     for(let i = 0; i < taches.length; i++){
         let min = i;
-        console.log(taskHour(i));
         for(let j = i+1; j < taches.length; j++){
             if(taskHour(j) < taskHour(min)){
                 min = j;
@@ -75,7 +106,12 @@ function trierTachesParHeure() {
 
 // Fonction qui retourne l'heure d'une tâche depuis minuit en minutes
 function taskHour(taskIndex){
-    return taches[taskIndex].querySelector(".heure").innerHTML.split(":").map(Number)[0] * 60 + taches[taskIndex].querySelector(".heure").innerHTML.split(":").map(Number)[1]
+    return taches[taskIndex].querySelector(".heure").innerHTML.split(":").map(Number)[0] * 60 + taches[taskIndex].querySelector(".heure").innerHTML.split(":").map(Number)[1];
+}
+
+// Fonction qui retourne la durée d'une tâche en minutes
+function taskTime(taskIndex){
+    return Number(taches[taskIndex].querySelector(".duration").innerHTML) * 60;
 }
 
 // Écoute si l'utilisateur click sur la liste de tâches
@@ -103,6 +139,3 @@ function showTask(){
 
 
 showTask();
-
-// Urgenece seulement
-// localStorage.clear();

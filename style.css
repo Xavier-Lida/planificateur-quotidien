@@ -112,6 +112,10 @@
     align-items: center; 
   }
 
+  .duration {
+    display: none;
+  }
+  
   .remove:hover {
     cursor: pointer;
     background: #edeef0;
