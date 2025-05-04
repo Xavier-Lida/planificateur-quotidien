@@ -34,7 +34,7 @@ function validHour(){
 
 function validTime(){
     let valid = true;
-    if(inputTime.value < 0.5 || inputTime.value > 23){
+    if(inputTime.value < 0.25 || inputTime.value > 23.75){
         alert("Durée de la tâche invalide");
         valid = false
     }
@@ -130,6 +130,7 @@ inputBox.addEventListener("keydown", function(press){
 });
 
 function saveData(){
+    taches = Array.from(listContainer.querySelectorAll("li"));
     localStorage.setItem("data", listContainer.innerHTML);
 }
 
